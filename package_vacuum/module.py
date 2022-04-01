@@ -12,8 +12,9 @@ class ModuleNotFoundException(Exception):
 
 
 def isInternalModule(module):
-    if hasattr(module, KEY_MODULE_PATH):
-        return MAYA_LOCATION in getattr(module, KEY_MODULE_PATH)
+    mpath = getattr(module, KEY_MODULE_PATH, None)
+    if mpath is not None:
+        return MAYA_LOCATION in mpath
     else:
         return True
 
@@ -33,7 +34,7 @@ def findModulesByQualifyName(name, ignoreInternal=False):
         else:
             return False
 
-    names = [m[0] for m in sys.modules.iteritems() if test(m[0], m[1])]
+    names = [m[0] for m in sys.modules.items() if test(m[0], m[1])]
     names.sort(key=lambda n: len(n))
 
     return names
@@ -48,7 +49,7 @@ def filterModules(searchKey, ignoreInternal=False):
         else:
             return False
 
-    names = [m[0] for m in sys.modules.iteritems() if test(m[0], m[1])]
+    names = [m[0] for m in sys.modules.items() if test(m[0], m[1])]
     names.sort()
     return names
 

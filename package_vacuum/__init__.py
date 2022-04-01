@@ -1,6 +1,7 @@
 __author__ = 'James.Ni'
 __version__ = '1.0.2'
 
+import sys
 import os.path
 
 from shiboken2 import wrapInstance
@@ -11,14 +12,17 @@ import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import maya.mel as mel
 
-from ui import MainWindow
+from .ui import MainWindow
 
 
 gToolWindowInstance = None
 
 
 def getMayaMainWindow():
-    return wrapInstance(long(omui.MQtUtil.mainWindow()), QMainWindow)
+    if sys.version_info.major >= 3:
+        return wrapInstance(int(omui.MQtUtil.mainWindow()), QMainWindow)
+    else:
+        return wrapInstance(long(omui.MQtUtil.mainWindow()), QMainWindow)
 
 def resetGlobalWindowReference():
     global gToolWindowInstance

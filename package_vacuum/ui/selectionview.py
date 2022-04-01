@@ -60,9 +60,9 @@ class SelectionListModel(QtCore.QAbstractListModel):
                     self.select(index)
                 else:
                     if newRow > lastSelect:
-                        idcs = xrange(lastSelect, newRow + 1, 1)
+                        idcs = range(lastSelect, newRow + 1, 1)
                     else:
-                        idcs = xrange(lastSelect, newRow - 1, -1)
+                        idcs = range(lastSelect, newRow - 1, -1)
 
                     for i in idcs:
                         if i not in self._selections:
@@ -84,7 +84,7 @@ class SelectionListModel(QtCore.QAbstractListModel):
                 self._selections = []
 
             startRow, endRow = start.row(), end.row()
-            for i in xrange(startRow, endRow + 1):
+            for i in range(startRow, endRow + 1):
                 if i not in self._selections:
                     self._selections.append(i)
 
@@ -100,7 +100,7 @@ class SelectionListModel(QtCore.QAbstractListModel):
 
     def invertSelection(self):
         itemCount = len(self._items)
-        newSelections = [i for i in xrange(itemCount) if i not in self._selections]
+        newSelections = [i for i in range(itemCount) if i not in self._selections]
         self._selections = newSelections
         self.notifyChangeAll()
 

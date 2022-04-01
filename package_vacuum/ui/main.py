@@ -27,6 +27,21 @@ class ClearBySelectionWidgets(object):
         self.ignoreInternalCheck = None
         self.selectionView = None
 
+class AutoFittingTab(QtWidgets.QTabWidget):
+    def __init__(self, *args, **kwargs):
+        super(AutoFittingTab, self).__init__(*args, **kwargs)
+        self.currentChanged.connect(self.updateGeometry)
+
+    def minimumSizeHint(self):
+        return self.sizeHint()
+
+    def sizeHint(self):
+        current = self.currentWidget()
+        if current:
+            widgetHint = current.sizeHint()
+            return QtCore.QSize(widgetHint.width(), self.tabBar().height() + widgetHint.height())
+        else:
+            return super().sizeHint()
 
 class SimpleToolbar(QtWidgets.QWidget):
     def __init__(self, title='', parent=None):
@@ -75,7 +90,7 @@ class MainWindow(QtWidgets.QWidget):
         return os.path.join(dir, 'image', name)
 
     def _initUI(self):
-        self.resize(400, 300)
+        self.resize(400, 550)
         self.setWindowTitle('Package Vacuum')
         self.setWindowIcon(QtGui.QIcon(self._getImagePath('vacuum-32x32.png')))
 
@@ -84,11 +99,10 @@ class MainWindow(QtWidgets.QWidget):
         self.setLayout(layout)
 
         # tabs
-        tabs = QtWidgets.QTabWidget(self)
+        tabs = AutoFittingTab(self)
         tabs.setStyleSheet("QTabBar::tab { height: 25px }")
         tabs.addTab(self._initExplicitInput(), 'Clean By Name')
         tabs.addTab(self._initModuleSelection(), 'Clean By Selection')
-        tabs.currentChanged.connect(self.resizeTab)
         tabs.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._tabs = tabs
         layout.addWidget(tabs)
@@ -112,20 +126,6 @@ class MainWindow(QtWidgets.QWidget):
     def showEvent(self, event):
         if not self._windowOpened:
             self._windowOpened = True
-            self.resizeTab(0)
-
-    @Slot(int)
-    def resizeTab(self, index):
-        for i in xrange(self._tabs.count()):
-            widget = self._tabs.widget(i)
-            if i == index:
-                widget.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-            else:
-                widget.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
-
-        currentWidget = self._tabs.widget(index)
-        currentWidget.resize(currentWidget.minimumSizeHint())
-        currentWidget.adjustSize()
 
     def _createHeaderLabel(self, header, parent):
         headerLabel = QtWidgets.QLabel(header, parent)
@@ -202,8 +202,6 @@ class MainWindow(QtWidgets.QWidget):
         button.clicked.connect(self.cleanByUserInput)
         button.setFixedHeight(30)
         layout.addWidget(button)
-
-        layout.addSpacerItem(QtWidgets.QSpacerItem(5, 5, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding))
 
         self._clearByNameWidgets = widgetsSet
         return container
