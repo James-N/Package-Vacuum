@@ -4,9 +4,11 @@ __version__ = '1.0.2'
 import sys
 import os.path
 
-from shiboken2 import wrapInstance
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QMainWindow
+import package_vacuum.Qt
+
+from shiboken import wrapInstance
+from PySide.QtCore import Qt
+from PySide.QtWidgets import QMainWindow
 
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds

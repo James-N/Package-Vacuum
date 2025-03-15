@@ -1,7 +1,7 @@
-import PySide2.QtCore as QtCore
-from PySide2.QtCore import Qt, Signal, Slot
-import PySide2.QtWidgets as QtWidgets
-import PySide2.QtGui as QtGui
+import PySide.QtCore as QtCore
+from PySide.QtCore import Qt, Signal, Slot
+import PySide.QtWidgets as QtWidgets
+import PySide.QtGui as QtGui
 
 
 def constructPen(color, style):
@@ -93,7 +93,7 @@ class LogViewDelegate(QtWidgets.QStyledItemDelegate):
         content = index.data(Qt.DisplayRole)[0]
         if content is not None:
             metrics = QtGui.QFontMetrics(self.parent().font())
-            contentWidth = metrics.width(content) + LogViewDelegate.TEXT_PADDING * 2
+            contentWidth = metrics.horizontalAdvance(content) + LogViewDelegate.TEXT_PADDING * 2
             return QtCore.QSize(max(contentWidth, option.rect.width()), 20)
         else:
             return QtCore.QSize(0, 0)

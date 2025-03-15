@@ -1,10 +1,10 @@
 import sys
 import os.path
 
-import PySide2.QtCore as QtCore
-from PySide2.QtCore import Qt, Signal, Slot
-import PySide2.QtWidgets as QtWidgets
-import PySide2.QtGui as QtGui
+import PySide.QtCore as QtCore
+from PySide.QtCore import Qt, Signal, Slot
+import PySide.QtWidgets as QtWidgets
+import PySide.QtGui as QtGui
 
 from .logview import LogLevel, LogView
 from .selectionview import SelectionView
@@ -13,6 +13,7 @@ import package_vacuum.module as module
 
 
 SELF_MODULE_NAME = 'package_vacuum'
+PHYSICAL_PIXEL_SCALE = QtGui.QGuiApplication.primaryScreen().logicalDotsPerInch() / 96.0
 
 
 class ClearByNameWidgets(object):
@@ -100,7 +101,7 @@ class MainWindow(QtWidgets.QWidget):
 
         # tabs
         tabs = AutoFittingTab(self)
-        tabs.setStyleSheet("QTabBar::tab { height: 25px }")
+        tabs.setStyleSheet("QTabBar::tab {{ height: {0}px }}".format(25 * PHYSICAL_PIXEL_SCALE))
         tabs.addTab(self._initExplicitInput(), 'Clean By Name')
         tabs.addTab(self._initModuleSelection(), 'Clean By Selection')
         tabs.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -200,7 +201,7 @@ class MainWindow(QtWidgets.QWidget):
         # clean action button
         button = QtWidgets.QPushButton('Clean', container)
         button.clicked.connect(self.cleanByUserInput)
-        button.setFixedHeight(30)
+        button.setFixedHeight(30 * PHYSICAL_PIXEL_SCALE)
         layout.addWidget(button)
 
         self._clearByNameWidgets = widgetsSet
@@ -258,7 +259,7 @@ class MainWindow(QtWidgets.QWidget):
         # clean action button
         button = QtWidgets.QPushButton('Clean', container)
         button.clicked.connect(self.cleanBySelection)
-        button.setFixedHeight(30)
+        button.setFixedHeight(30 * PHYSICAL_PIXEL_SCALE)
         layout.addWidget(button)
 
         self._clearBySelectionWidgets = widgetSet
